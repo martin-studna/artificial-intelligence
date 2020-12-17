@@ -1,0 +1,92 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug (Launch) - Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-AStarTest<ai-1>",
+      "request": "launch",
+      "mainClass": "AStarTest",
+      "projectName": "ai-1"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-MctsTest<ai-1>",
+      "request": "launch",
+      "mainClass": "MctsTest",
+      "projectName": "ai-1"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-MinimaxTest<ai-1>",
+      "request": "launch",
+      "mainClass": "MinimaxTest",
+      "projectName": "ai-1"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-UcsTest<ai-1>",
+      "request": "launch",
+      "mainClass": "UcsTest",
+      "projectName": "ai-1"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-SokobanMain<sokoban4j>",
+      "request": "launch",
+      "mainClass": "SokobanMain",
+      "projectName": "sokoban4j",
+      
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-BoardCompactTest_Memory<sokoban4j>",
+      "request": "launch",
+      "mainClass": "game.board.BoardCompactTest_Memory",
+      "projectName": "sokoban4j"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-BoardCompressedTest_Memory<sokoban4j>",
+      "request": "launch",
+      "mainClass": "game.board.BoardCompressedTest_Memory",
+      "projectName": "sokoban4j"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-BoardCreationTest<sokoban4j>",
+      "request": "launch",
+      "mainClass": "game.board.BoardCreationTest",
+      "projectName": "sokoban4j"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-BoardSlimTest_Memory<sokoban4j>",
+      "request": "launch",
+      "mainClass": "game.board.BoardSlimTest_Memory",
+      "projectName": "sokoban4j"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-SokobanActionsTest<sokoban4j>",
+      "request": "launch",
+      "mainClass": "game.board.SokobanActionsTest",
+      "projectName": "sokoban4j"
+    },
+    {
+      "type": "java",
+      "name": "Debug (Launch)-SOK2S4JL<sokoban4j>",
+      "request": "launch",
+      "mainClass": "utils.SOK2S4JL",
+      "projectName": "sokoban4j"
+    }
+  ]
+}
