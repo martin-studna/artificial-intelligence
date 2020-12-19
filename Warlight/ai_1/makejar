@@ -1,0 +1,7 @@
+#!/bin/bash
+
+jar cf ai_1_tmp.jar -C target/classes .
+
+zip -d ai_1_tmp.jar AStar.class Ucs.class Minimax.class Mcts.class
+
+mv -f ai_1_tmp.jar ai_1.jar
