@@ -17,72 +17,126 @@ public class Minimax<S, A> implements Strategy<S, A> {
     this.debugLevel = 0;
   }
 
-  private Result<A> evaluate(S state, int depth, double alpha, double beta, boolean maximizingPlayer) {
-    debugLevel++;
-    System.out.println("Debug level: " + debugLevel);
-    if (game.isDone(state)) {
-      System.out.println(game.outcome(state));
-      return new Result<A>(game.outcome(state), null);
-    }
+  private Result<A> evaluate(S state, int depth, int level, double alpha, double beta, boolean maximizingPlayer) {
 
-    if (depth == 0 && limit != 0) {
-      System.out.println(game.evaluate(state));
-      return new Result<A>(game.evaluate(state), null);
+    if (game.isDone(state)) {
+      // System.out.println("Game is done!");
+      // System.out.println("Level: " + level);
+      var outcome = game.outcome(state);
+      if (this.player == 1 && outcome != 0) {
+        outcome -= level;
+      } else if (this.player == 0 && outcome != 0) {
+        outcome += level;
+      }
+      // System.out.println(outcome);
+      return new Result<A>(outcome, null, level);
+    } else if (depth == 0 && limit != 0) {
+      // System.out.println("Limit has been reached!");
+      // System.out.println("Level: " + level);
+      var outcome = game.evaluate(state);
+      if (this.player == 1 && outcome != 0) {
+        outcome -= level;
+      } else if (this.player == 0 && outcome != 0) {
+        outcome += level;
+      }
+      // System.out.println(outcome);
+      return new Result<A>(outcome, null, level);
     }
 
     A resultAction = null;
+    long resultLevel = 1000000000;
+    int wonTimes = 0;
 
     if (maximizingPlayer) {
-      var maxEval = -10000000.0;
+      var maxEval = -1000000000.0;
       for (var action : game.actions(state)) {
         var newState = game.clone(state);
         game.apply(newState, action);
-        var result = evaluate(newState, depth - 1, alpha, beta, false);
-        debugLevel--;
-        System.out.println("Debug level: " + debugLevel);
-        if (maxEval < result.value) {
-          resultAction = action;
+        var result = evaluate(newState, depth - 1, level + 1, alpha, beta, false);
+        // System.out.println("----");
+        // System.out.println("Level: " + level);
+        // System.out.println("MaxEval: " + maxEval);
+        // System.out.println("Result value: " + result.value);
+
+        if ((this.player == 1 && result.value == (HeuristicGame.PLAYER_1_WIN - result.level))
+            || (this.player == 2 && result.value == (HeuristicGame.PLAYER_2_WIN + result.level)))
+          wonTimes++;
+
+        if (result.value > maxEval) {
           maxEval = result.value;
+          resultAction = action;
+          resultLevel = result.level;
         }
 
-        if (maxEval >= beta)
-          return new Result<A>(maxEval, resultAction);
+        if (result.value == maxEval && result.level < resultLevel) {
+          resultAction = action;
+          resultLevel = result.level;
+        }
 
-        if (maxEval > alpha) {
+        if (maxEval >= beta) {
+          if (maxEval == 0) {
+            return new Result<A>(this.player == 1 ? wonTimes : -wonTimes, resultAction, resultLevel);
+          } else
+            return new Result<A>(maxEval, resultAction, resultLevel);
+        }
+
+        if (maxEval > alpha)
           alpha = maxEval;
-        }
       }
-      System.out.println(maxEval);
-      return new Result<A>(maxEval, resultAction);
+      if (maxEval == 0)
+        return new Result<A>(this.player == 1 ? wonTimes : -wonTimes, resultAction, resultLevel);
+      else
+        return new Result<A>(maxEval, resultAction, resultLevel);
     } else {
-      var minEval = 10000000.0;
+      var minEval = 100000000000.0;
       for (var action : game.actions(state)) {
         var newState = game.clone(state);
         game.apply(newState, action);
-        var result = evaluate(newState, depth - 1, alpha, beta, true);
-        debugLevel--;
-        System.out.println("Debug level: " + debugLevel);
-        if (minEval > result.value) {
-          resultAction = action;
+        var result = evaluate(newState, depth - 1, level + 1, alpha, beta, true);
+        // System.out.println("----");
+        // System.out.println("Level: " + level);
+        // System.out.println("MinEval: " + minEval);
+        // System.out.println("Result value: " + result.value);
+
+        if ((this.player == 1 && result.value == (HeuristicGame.PLAYER_1_WIN - result.level))
+            || (this.player == 2 && result.value == (HeuristicGame.PLAYER_2_WIN + result.level)))
+          wonTimes++;
+
+        if (result.value < minEval) {
           minEval = result.value;
+          resultAction = action;
+          resultLevel = result.level;
         }
 
-        if (minEval <= alpha)
-          return new Result<A>(minEval, resultAction);
+        if (result.value == minEval && result.level < resultLevel) {
+          resultAction = action;
+          resultLevel = result.level;
+        }
 
-        if (minEval < beta) {
+        if (minEval <= alpha) {
+          if (minEval == 0)
+            return new Result<A>(this.player == 1 ? wonTimes : -wonTimes, resultAction, resultLevel);
+          else
+            return new Result<A>(minEval, resultAction, resultLevel);
+        }
+
+        if (minEval < beta)
           beta = minEval;
-        }
+
       }
-      System.out.println(minEval);
-      return new Result<A>(minEval, resultAction);
+      if (minEval == 0)
+        return new Result<A>(this.player == 1 ? wonTimes : -wonTimes, resultAction, resultLevel);
+      else
+        return new Result<A>(minEval, resultAction, resultLevel);
     }
   }
 
   // method in Strategy interface
   public A action(S state) {
     this.player = game.player(state);
-    var result = evaluate(state, limit, Double.MIN_VALUE, Double.MAX_VALUE, game.player(state) == 1 ? true : false);
+    int level = 0;
+    var result = evaluate(state, limit, level, Double.MIN_VALUE, Double.MAX_VALUE,
+        game.player(state) == 1 ? true : false);
     return result.action;
   }
 
