@@ -44,10 +44,16 @@ public class Minimax<S, A> implements Strategy<S, A> {
       return new Result<A>(outcome, null, level);
     } else if (depth == 0 && limit != 0) {
       var outcome = game.evaluate(state);
-      if (this.player == 1) {
-        outcome -= level;
-      } else if (this.player == 2) {
-        outcome += level;
+      if (this.player == 1 && outcome != 0) {
+        if (outcome == 1000)
+          outcome -= level;
+        else
+          outcome += level;
+      } else if (this.player == 2 && outcome != 0) {
+        if (outcome == -1000)
+          outcome += level;
+        else
+          outcome -= level;
       }
       // System.out.println(outcome);
       return new Result<A>(outcome, null, level);
