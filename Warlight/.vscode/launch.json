@@ -1,0 +1,57 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Launch Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    },
+    {
+      "type": "java",
+      "name": "Launch AStarTest",
+      "request": "launch",
+      "mainClass": "AStarTest",
+      "projectName": "ai-1"
+    },
+    {
+      "type": "java",
+      "name": "Launch UcsTest",
+      "request": "launch",
+      "mainClass": "UcsTest",
+      "projectName": "ai-1"
+    },
+    {
+      "type": "java",
+      "name": "Launch ConnectFourMain",
+      "request": "launch",
+      "mainClass": "minimax.connectfour.ConnectFourMain",
+      "projectName": "ai-1"
+    },
+    {
+      "type": "java",
+      "name": "Launch TicTacToeMain",
+      "request": "launch",
+      "mainClass": "minimax.tictactoe.TicTacToeMain",
+      "projectName": "ai-1"
+    },
+    {
+      "type": "java",
+      "name": "Launch TrivialMain",
+      "request": "launch",
+      "mainClass": "minimax.trivial.TrivialMain",
+      "projectName": "ai-1"
+    },
+    {
+      "type": "java",
+      "name": "Launch Warlight",
+      "request": "launch",
+      "mainClass": "Warlight",
+      "projectName": "warlight",
+      "args": "MyAgent Napoleon"
+    }
+  ]
+}
