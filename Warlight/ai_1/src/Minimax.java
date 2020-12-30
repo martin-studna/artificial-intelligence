@@ -64,7 +64,7 @@ public class Minimax<S, A> implements Strategy<S, A> {
     int wonTimes = 0;
 
     if (maximizingPlayer) {
-      var maxEval = -1000000000.0;
+      var maxEval = -1000000.0;
       for (var action : game.actions(state)) {
         var newState = game.clone(state);
         game.apply(newState, action);
@@ -81,11 +81,6 @@ public class Minimax<S, A> implements Strategy<S, A> {
           resultLevel = result.level;
         }
 
-        // if (result.value == maxEval && result.level < resultLevel) {
-        // resultAction = action;
-        // resultLevel = result.level;
-        // }
-
         if (maxEval >= beta) {
           if (maxEval == 0) {
             return new Result<A>(this.player == 1 ? wonTimes : -wonTimes, resultAction, resultLevel);
@@ -101,7 +96,7 @@ public class Minimax<S, A> implements Strategy<S, A> {
       else
         return new Result<A>(maxEval, resultAction, resultLevel);
     } else {
-      var minEval = 100000000000.0;
+      var minEval = 1000000.0;
       for (var action : game.actions(state)) {
         var newState = game.clone(state);
         game.apply(newState, action);
@@ -144,5 +139,4 @@ public class Minimax<S, A> implements Strategy<S, A> {
         game.player(state) == 1 ? true : false);
     return result.action;
   }
-
 }
