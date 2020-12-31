@@ -12,7 +12,7 @@ public class MyAgent extends AgentBase {
 
     public MyAgent() {
         var warlightGame = new WarlightGame();
-        minimax = new Minimax<Game, Move>(warlightGame, 10);
+        minimax = new Minimax<Game, Move>(warlightGame, 5);
     }
 
     @Override
@@ -30,6 +30,8 @@ public class MyAgent extends AgentBase {
 
         PlaceArmiesMove move = (PlaceArmiesMove) minimax.action(game);
 
+        if (move == null)
+            move = new PlaceArmiesMove(new ArrayList<PlaceArmies>());
         return move.commands;
     }
 
@@ -38,6 +40,8 @@ public class MyAgent extends AgentBase {
 
         AttackTransferMove move = (AttackTransferMove) minimax.action(game.clone());
 
+        if (move == null)
+            move = new AttackTransferMove(new ArrayList<AttackTransfer>());
         return move.commands;
     }
 }

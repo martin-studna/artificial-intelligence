@@ -134,46 +134,6 @@ public class WarlightGame implements HeuristicGame<Game, Move> {
       }
 
       moves.add(new PlaceArmiesMove(ret));
-
-      // int available = state.armiesPerTurn(me);
-
-      // List<Region> mine = state.regionsOwnedBy(me);
-      // int numRegions = mine.size();
-
-      // int[] count = new int[numRegions];
-
-      // Region region = null;
-      // int max = 0;
-
-      // List<PlaceArmies> retPlace = new ArrayList<PlaceArmies>();
-
-      // // retPlace.add(new PlaceArmies(region, available));
-
-      // for (int i = 0; i < numRegions; ++i) {
-      // if (state.getArmies(mine.get(i)) >= max) {
-      // region = mine.get(i);
-      // max = state.getArmies(mine.get(i));
-      // }
-      // }
-
-      // retPlace.add(new PlaceArmies(region, available));
-
-      // moves.add(new PlaceArmiesMove(retPlace));
-
-      // for (Region r : state.regionsOwnedBy(me)) {
-      // max = 0;
-      // for (Region n : r.getNeighbors()) {
-      // if (state.getOwner(n) != state.getOwner(r) && max < state.getArmies(n)) {
-      // max = state.getArmies(n);
-      // }
-      // }
-
-      // if (max > 0) {
-      // retPlace.clear();
-      // retPlace.add(new PlaceArmies(r, available));
-      // moves.add(new PlaceArmiesMove(retPlace));
-      // }
-      // }
     }
 
     if (state.getPhase() == Phase.ATTACK_TRANSFER) {
@@ -199,58 +159,34 @@ public class WarlightGame implements HeuristicGame<Game, Move> {
 
       moves.add(new AttackTransferMove(ret));
 
-      // List<AttackTransfer> transfers = new ArrayList<AttackTransfer>();
+      List<AttackTransfer> transfers = new ArrayList<AttackTransfer>();
 
-      // AttackTransferTactics.transferArmies(state, transfers);
-      // // AttackTransferTactics.transferArmies2(state, moves);
-      // moves.add(new AttackTransferMove(transfers));
+      AttackTransferTactics.transferArmies(state, transfers);
+      // AttackTransferTactics.transferArmies2(state, moves);
+      moves.add(new AttackTransferMove(transfers));
 
-      // for (Region r : state.regionsOwnedBy(opponent)) {
-      // List<AttackTransfer> retAttack2 = new ArrayList<AttackTransfer>();
-      // List<Region> neighbors = r.getNeighbors();
+      List<AttackTransfer> retAttack = new ArrayList<AttackTransfer>();
+      for (Region r : state.regionsOwnedBy(me)) {
+        List<Region> neighbors = r.getNeighbors();
+        int armyCount = state.getArmies(r) - 1;
+        for (Region to : neighbors) {
+          if (state.getOwner(to) == me)
+            continue;
 
-      // for (Region from : neighbors) {
-      // if (state.getOwner(from) != me)
-      // continue;
+          if (armyCount > state.getArmies(to)) {
+            retAttack.add(new AttackTransfer(r, to, armyCount));
 
-      // int army = state.getArmies(from);
-      // if (army > 1) {
-      // retAttack2.add(new AttackTransfer(from, r, state.getArmies(from) - 1));
-      // }
+            armyCount -= armyCount;
+          }
+        }
+      }
+      if (retAttack.size() > 0) {
+        moves.add(new AttackTransferMove(retAttack));
+        var join = Stream.concat(retAttack.stream(), transfers.stream()).collect(Collectors.toList());
+        moves.add(new AttackTransferMove(join));
 
-      // }
-
-      // if (retAttack2.size() > 0) {
-      // moves.add(new AttackTransferMove(retAttack2));
-      // var join = Stream.concat(retAttack2.stream(),
-      // transfers.stream()).collect(Collectors.toList());
-      // moves.add(new AttackTransferMove(join));
-      // }
-      // }
-
-      // List<AttackTransfer> retAttack = new ArrayList<AttackTransfer>();
-      // for (Region r : state.regionsOwnedBy(me)) {
-      // List<Region> neighbors = r.getNeighbors();
-      // int armyCount = state.getArmies(r) - 1;
-      // for (Region to : neighbors) {
-      // if (state.getOwner(to) == me)
-      // continue;
-
-      // if (armyCount > state.getArmies(to)) {
-      // retAttack.add(new AttackTransfer(r, to, armyCount));
-
-      // armyCount -= armyCount;
-      // }
-      // }
-      // }
-      // if (retAttack.size() > 0) {
-      // moves.add(new AttackTransferMove(retAttack));
-      // var join = Stream.concat(retAttack.stream(),
-      // transfers.stream()).collect(Collectors.toList());
-      // moves.add(new AttackTransferMove(join));
-
-      // // retAttack.clear();
-      // }
+        // retAttack.clear();
+      }
 
     }
 
@@ -323,9 +259,9 @@ public class WarlightGame implements HeuristicGame<Game, Move> {
     // return -1000000000;
     // }
 
-    totalScore += 1000 * (armiesCount1 - armiesCount2);
-    totalScore += 1000 * (regionCount1 - regionCount2);
-    totalScore += 100000 * (armiesPerTurn1 - armiesPerTurn2);
+    totalScore += 1 * (armiesCount1 - armiesCount2);
+    totalScore += 1 * (regionCount1 - regionCount2);
+    totalScore += 1 * (armiesPerTurn1 - armiesPerTurn2);
 
     return totalScore;
   }

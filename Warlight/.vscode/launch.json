@@ -43,7 +43,8 @@
       "name": "Launch TrivialMain",
       "request": "launch",
       "mainClass": "minimax.trivial.TrivialMain",
-      "projectName": "ai-1"
+      "projectName": "ai-1",
+      "args": "random minimax:0 -sim 100"
     },
     {
       "type": "java",
@@ -51,7 +52,7 @@
       "request": "launch",
       "mainClass": "Warlight",
       "projectName": "warlight",
-      "args": "MyAgent Napoleon"
+      "args": "MyAgent Napoleon -sim 50"
     }
   ]
 }

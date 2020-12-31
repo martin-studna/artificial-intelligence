@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.Random;
+import static java.lang.System.out;
 
 import minimax.*;
 
@@ -18,13 +19,13 @@ public class Minimax<S, A> implements Strategy<S, A> {
   }
 
   private Result<A> evaluate(S state, int depth, int level, double alpha, double beta, boolean maximizingPlayer) {
-
+    // out.format("Minimax Search Level: %d \n", level);
     /**
      * If we have visited all states.
      */
     if (game.isDone(state)) {
-      // System.out.println("Game is done!");
-      // System.out.println("Level: " + level);
+      // out.println("Game is done!");
+
       var outcome = game.outcome(state);
 
       /**
@@ -41,37 +42,33 @@ public class Minimax<S, A> implements Strategy<S, A> {
         else
           outcome -= level;
       }
+      // out.println("Outcome: " + outcome + ", Level: " + level);
       return new Result<A>(outcome, null, level);
     } else if (depth == 0 && limit != 0) {
       var outcome = game.evaluate(state);
       if (this.player == 1 && outcome != 0) {
-        if (outcome == 1000)
-          outcome -= level;
-        else
-          outcome += level;
+        outcome -= level;
       } else if (this.player == 2 && outcome != 0) {
-        if (outcome == -1000)
-          outcome += level;
-        else
-          outcome -= level;
+        outcome += level;
       }
-      // System.out.println(outcome);
+      // out.println("Evaluate value: " + outcome + ", Level: " + level);
       return new Result<A>(outcome, null, level);
     }
 
     A resultAction = null;
-    long resultLevel = 1000000000;
+    long resultLevel = 0;
     int wonTimes = 0;
 
     if (maximizingPlayer) {
-      var maxEval = -1000000.0;
+      // out.println("Maximizing player");
+      var maxEval = -10000000000.0;
       for (var action : game.actions(state)) {
         var newState = game.clone(state);
         game.apply(newState, action);
         var result = evaluate(newState, depth - 1, level + 1, alpha, beta, false);
 
-        if ((this.player == 1 && result.value == (HeuristicGame.PLAYER_1_WIN - result.level))
-            || (this.player == 2 && result.value == (HeuristicGame.PLAYER_2_WIN + result.level))) {
+        if ((result.value == (HeuristicGame.PLAYER_1_WIN - result.level))
+            || (result.value == (HeuristicGame.PLAYER_2_WIN + result.level))) {
           wonTimes++;
         }
 
@@ -83,6 +80,7 @@ public class Minimax<S, A> implements Strategy<S, A> {
 
         if (maxEval >= beta) {
           if (maxEval == 0) {
+            // out.println("draw - set winning player");
             return new Result<A>(this.player == 1 ? wonTimes : -wonTimes, resultAction, resultLevel);
           } else
             return new Result<A>(maxEval, resultAction, resultLevel);
@@ -91,19 +89,21 @@ public class Minimax<S, A> implements Strategy<S, A> {
         if (maxEval > alpha)
           alpha = maxEval;
       }
-      if (maxEval == 0)
+      if (maxEval == 0) {
+        // out.println("draw - set winning player");
         return new Result<A>(this.player == 1 ? wonTimes : -wonTimes, resultAction, resultLevel);
-      else
+      } else
         return new Result<A>(maxEval, resultAction, resultLevel);
     } else {
-      var minEval = 1000000.0;
+      // out.println("Minimizing player");
+      var minEval = 10000000000.0;
       for (var action : game.actions(state)) {
         var newState = game.clone(state);
         game.apply(newState, action);
         var result = evaluate(newState, depth - 1, level + 1, alpha, beta, true);
 
-        if ((this.player == 1 && result.value == (HeuristicGame.PLAYER_1_WIN - result.level))
-            || (this.player == 2 && result.value == (HeuristicGame.PLAYER_2_WIN + result.level))) {
+        if ((result.value == (HeuristicGame.PLAYER_1_WIN - result.level))
+            || (result.value == (HeuristicGame.PLAYER_2_WIN + result.level))) {
           wonTimes++;
         }
 
@@ -114,9 +114,10 @@ public class Minimax<S, A> implements Strategy<S, A> {
         }
 
         if (minEval <= alpha) {
-          if (minEval == 0)
+          if (minEval == 0) {
+            // out.println("draw - set winning player");
             return new Result<A>(this.player == 1 ? wonTimes : -wonTimes, resultAction, resultLevel);
-          else
+          } else
             return new Result<A>(minEval, resultAction, resultLevel);
         }
 
@@ -124,9 +125,10 @@ public class Minimax<S, A> implements Strategy<S, A> {
           beta = minEval;
 
       }
-      if (minEval == 0)
+      if (minEval == 0) {
+        // out.println("draw - set winning player");
         return new Result<A>(this.player == 1 ? wonTimes : -wonTimes, resultAction, resultLevel);
-      else
+      } else
         return new Result<A>(minEval, resultAction, resultLevel);
     }
   }
@@ -135,8 +137,7 @@ public class Minimax<S, A> implements Strategy<S, A> {
   public A action(S state) {
     this.player = game.player(state);
     int level = 0;
-    var result = evaluate(state, limit, level, Double.MIN_VALUE, Double.MAX_VALUE,
-        game.player(state) == 1 ? true : false);
+    var result = evaluate(state, limit, level, -10000000000.0, 10000000000.0, game.player(state) == 1 ? true : false);
     return result.action;
   }
 }
